@@ -9,9 +9,9 @@ module Bucky
       module WaitHandler
         module_function
 
-        def wait_until_helper(timeout, interval, ignore, &block)
+        def wait_until_helper(timeout, interval, ignore)
           wait = Selenium::WebDriver::Wait.new(timeout: timeout, interval: interval, ignore: [ignore])
-          wait.until { block.call }
+          wait.until { yield }
         rescue Selenium::WebDriver::Error::TimeoutError
           raise ignore, "Wait until the limit times for #{caller[1][/`([^']*)'/, 1]}\n   #{$ERROR_INFO.message}"
         end

@@ -18,7 +18,7 @@ module Bucky
 
         private
 
-        def parallel_new_worker_each(data_set, max_processes, &block)
+        def parallel_new_worker_each(data_set, max_processes)
           # Max parallel workers number
           available_workers = max_processes
 
@@ -30,19 +30,19 @@ module Bucky
             Process.wait unless available_workers.positive?
             # Workers decrease when start working
             available_workers -= 1
-            fork { block.call(data) }
+            fork { yield(data) }
           end
           Process.waitall
         end
 
-        def parallel_distribute_into_workers(data_set, max_processes, &block)
+        def parallel_distribute_into_workers(data_set, max_processes)
           # Group the data by remainder of index
           data_set_grouped = data_set.group_by.with_index { |_elem, index| index % max_processes }
           # Use 'values' method to get only hash's key into an array
           data_set_grouped.values.each do |data_for_pre_worker|
             # Number of child process is equal to max_processes (or equal to data_set length when data_set length is less than max_processes)
             fork do
-              data_for_pre_worker.each { |data| block.call(data) }
+              data_for_pre_worker.each { |data| yield(data) }
             end
           end
           Process.waitall
