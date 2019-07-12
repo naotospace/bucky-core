@@ -36,8 +36,14 @@ describe Bucky::TestEquipment::PageObject::Pages do
       it 'call [] on partobject' do
         allow(subject).to receive(:send).and_return(parts_double)
         allow(parts_double).to receive(:send).and_return(part_double)
-        expect(part_double).to receive(:[])
+        expect(part_double).to receive(:[]).and_return(:part)
         subject.get_part(operation_args)
+      end
+      it 'if got element is nil, raise.' do
+        allow(subject).to receive(:send).and_return(parts_double)
+        allow(parts_double).to receive(:send).and_return(part_double)
+        allow(part_double).to receive(:[]).and_return(nil)
+        expect { subject.get_part(operation_args) }.to raise_error(Selenium::WebDriver::Error::NoSuchElementError)
       end
     end
   end

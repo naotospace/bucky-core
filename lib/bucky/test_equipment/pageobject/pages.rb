@@ -35,7 +35,12 @@ module Bucky
         # Get Web element by page, part, num
         # @param [Hash] args
         def get_part(args)
-          return send(args[:page]).send(args[:part][:locate])[args[:part][:num]] if part_plural?(args)
+          if part_plural?(args)
+            element = send(args[:page]).send(args[:part][:locate])[args[:part][:num]]
+            raise Selenium::WebDriver::Error::NoSuchElementError if element.nil?
+
+            return element
+          end
 
           send(args[:page]).send(args[:part])
         end
