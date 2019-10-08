@@ -1,4 +1,4 @@
-name: Ruby
+name: Ruby filter label
 
 # masterブランチへのPR時の実行
 on:
