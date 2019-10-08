@@ -2,7 +2,6 @@ name: Add label after approved
 
 on: pull_request_review
 
-name: Label approved pull requests
 jobs:
   labelWhenApproved:
     name: Label when approved
